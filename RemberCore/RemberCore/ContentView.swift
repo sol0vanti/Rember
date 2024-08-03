@@ -8,6 +8,7 @@
 import SwiftUI
 import FirebaseCore
 import FirebaseStorage
+import FirebaseFirestore
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
@@ -17,6 +18,7 @@ struct ContentView: View {
     @State private var showAlert = false
     @State private var navigateToDetail = false
     @State private var errorText: String? = nil
+    @State private var passwordText = ""
     
     init() {
         FirebaseApp.configure()
@@ -26,6 +28,7 @@ struct ContentView: View {
         NavigationStack {
             VStack {
                 if codes.first == nil {
+                    // MARK: Navigate to main view, placeholder below
                     Text("nil")
                 } else {
                     HStack {
@@ -40,6 +43,12 @@ struct ContentView: View {
                     Spacer()
                     
                     TextField("Enter your unique code", text: $codeNameText)
+                        .frame(width: UIScreen.main.bounds.width - 30, height: 35)
+                        .font(.system(size: 16, weight: .regular))
+                        .padding(.horizontal, 15)
+                        .textFieldStyle(.roundedBorder)
+                    
+                    TextField("Enter your password", text: $passwordText)
                         .frame(width: UIScreen.main.bounds.width - 30, height: 35)
                         .font(.system(size: 16, weight: .regular))
                         .padding(.horizontal, 15)
@@ -63,15 +72,24 @@ struct ContentView: View {
                                     if let error = error {
                                         print("Error creating folder: \(error.localizedDescription)")
                                     } else {
-                                        let code = Code(context: moc)
-                                        code.id = UUID()
-                                        code.name = codeNameText
+                                        let db = Firestore.firestore()
                                         
-                                        do {
-                                            try moc.save()
-                                        } catch {
-                                            errorText = "Failed to save code.name to Core Data."
-                                            print(error.localizedDescription)
+                                        db.collection("codes").document(folderName).setData(["name": codeNameText, "password": passwordText]) { error in
+                                            if let error = error {
+                                                errorText = "Failed to save to Firestore."
+                                                print(error.localizedDescription)
+                                            } else {
+                                                let code = Code(context: moc)
+                                                code.id = UUID()
+                                                code.name = codeNameText
+                                                
+                                                do {
+                                                    try moc.save()
+                                                } catch {
+                                                    errorText = "Failed to save code.name to Core Data."
+                                                    print(error.localizedDescription)
+                                                }
+                                            }
                                         }
                                     }
                                 }
