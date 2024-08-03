@@ -13,11 +13,13 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(sortDescriptors: []) var codes: FetchedResults<Code>
     @State private var codeNameText = ""
-    @State private var isErrorLabelVisible = false
     @State private var folderNames: [String] = []
+    @State private var showAlert = false
+    @State private var navigateToDetail = false
+    @State private var errorText: String? = nil
     
     init() {
-            FirebaseApp.configure()
+        FirebaseApp.configure()
     }
     
     var body: some View {
@@ -46,38 +48,38 @@ struct ContentView: View {
                         if codeNameText != "" {
                             let error: String? = self.checkFolderName()
                             if error != nil {
-                                print(error!)
-                                let ac = UIAlertController(title: "Failed to create new folder", message: "It seems that this folder is already exists.", preferredStyle: .actionSheet)
-                                ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-                                ac.addAction(UIAlertAction(title: "Log In", style: .destructive))
-                                let viewController = UIApplication.shared.windows.first!.rootViewController!
-                                viewController.present(ac, animated: true)
+                                showAlert = true
                             } else {
                                 let folderName = "folder_\(codeNameText)"
+                                
                                 let storage = Storage.storage()
                                 let storageRef = storage.reference().child(folderName)
                                 
-                                // Create an empty file in the folder to ensure it gets created
                                 let emptyData = Data()
                                 let fileRef = storageRef.child("placeholder.txt")
+                                
                                 fileRef.putData(emptyData, metadata: nil) { metadata, error in
                                     if let error = error {
                                         print("Error creating folder: \(error.localizedDescription)")
                                     } else {
-                                        print("Folder \(folderName) created successfully")
                                         let code = Code(context: moc)
                                         code.id = UUID()
                                         code.name = codeNameText
                                         
-                                        try? moc.save()
+                                        do {
+                                            try moc.save()
+                                        } catch {
+                                            errorText = "Failed to save code.name to Core Data."
+                                            print(error.localizedDescription)
+                                        }
                                     }
                                 }
                             }
                         } else {
-                            isErrorLabelVisible = true
+                            errorText = "Please, fill the text field and try again."
                         }
                     }) {
-                        Text("New Group")
+                        Text("Submit")
                             .foregroundColor(.white)
                     }
                         .padding(.vertical, 10)
@@ -87,11 +89,25 @@ struct ContentView: View {
                         .background(Color.accentColor)
                         .foregroundColor(.white)
                         .cornerRadius(5)
+                        .alert(isPresented: $showAlert) {
+                            Alert(title: Text("Failed to create new folder"), message: Text("It seems that this folder already exists."),
+                                  primaryButton: .destructive(Text("Log In")) {
+                                navigateToDetail = true
+                            },
+                            secondaryButton: .cancel())
+                        }
                     
-                    if isErrorLabelVisible == true {
-                        Text("errorLabel")
+                    NavigationLink(
+                        destination: DetailView(),
+                        isActive: $navigateToDetail,
+                        label: { EmptyView() }
+                    )
+                    
+                    if errorText != nil {
+                        Text(errorText ?? "An internal error was reported.")
                             .foregroundColor(Color.red)
                             .font(.system(size: 14, weight: .regular))
+                            .padding(.vertical, 10)
                     }
                     
                     Spacer()
@@ -105,6 +121,14 @@ struct ContentView: View {
             self.fetchFolderNames()
         }
     }
+    
+struct DetailView: View {
+    var body: some View {
+        Text("Detail View")
+            .font(.largeTitle)
+            .padding()
+    }
+}
     
     // MARK: Functionality of app
     
