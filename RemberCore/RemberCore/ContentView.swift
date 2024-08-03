@@ -29,10 +29,11 @@ struct ContentView: View {
                     Text("nil")
                 } else {
                     HStack {
-                        Text("Create your first folder!")
+                        Text("Create your first folder")
                             .font(.system(size: 18, weight: .semibold))
                             .multilineTextAlignment(.leading)
                             .foregroundColor(Color(UIColor.lightGray))
+                            .padding(.horizontal, 15)
                         Spacer()
                     }
                     
@@ -113,8 +114,7 @@ struct ContentView: View {
                     Spacer()
                 }
             }
-            .padding()
-            .navigationTitle("Rember")
+            .navigationTitle("Welcome to Rember")
             .navigationBarTitleDisplayMode(.large)
         }
         .onAppear {
@@ -123,10 +123,44 @@ struct ContentView: View {
     }
     
 struct DetailView: View {
+    @State private var passwordText = ""
+    
     var body: some View {
-        Text("Detail View")
-            .font(.largeTitle)
-            .padding()
+        NavigationStack {
+            VStack {
+                HStack {
+                    Text("Enter your password in order to complete registration")
+                        .font(.system(size: 18, weight: .semibold))
+                        .multilineTextAlignment(.leading)
+                        .foregroundColor(Color(UIColor.lightGray))
+                        .padding(.horizontal, 15)
+                    Spacer()
+                }
+                
+                Spacer()
+                
+                TextField("Password", text: $passwordText)
+                    .frame(width: UIScreen.main.bounds.width - 30, height: 35)
+                    .font(.system(size: 16, weight: .regular))
+                    .padding(.horizontal, 15)
+                    .textFieldStyle(.roundedBorder)
+                Button(action: {
+                    
+                }) {
+                    Text("Log In")
+                }
+                .padding(.vertical, 10)
+                .padding(.horizontal, 15)
+                .frame(width: UIScreen.main.bounds.width - 30, height: 35)
+                .font(.system(size: 16, weight: .semibold))
+                .background(Color.accentColor)
+                .foregroundColor(.white)
+                .cornerRadius(5)
+                
+                Spacer()
+            }
+            .navigationTitle("One more step")
+        }
     }
 }
     
