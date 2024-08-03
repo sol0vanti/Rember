@@ -6,14 +6,18 @@
 //
 
 import SwiftUI
+import FirebaseCore
+import FirebaseStorage
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext)
-    var moc
-    @FetchRequest(sortDescriptors: [])
-    var codes: FetchedResults<Code>
+    @Environment(\.managedObjectContext) var moc
+    @FetchRequest(sortDescriptors: []) var codes: FetchedResults<Code>
     @State private var codeNameText = ""
     @State private var isErrorLabelVisible = false
+    
+    init() {
+            FirebaseApp.configure()
+    }
     
     var body: some View {
         NavigationStack {
@@ -31,16 +35,30 @@ struct ContentView: View {
                     
                     Button(action: {
                         if codeNameText != "" {
-                            let code = Code(context: moc)
-                            code.id = UUID()
-                            code.name = codeNameText
+                            let folderName = "folder_\(codeNameText)"
+                            let storage = Storage.storage()
+                            let storageRef = storage.reference().child(folderName)
                             
-                            try? moc.save()
+                            // Create an empty file in the folder to ensure it gets created
+                            let emptyData = Data()
+                            let fileRef = storageRef.child("placeholder.txt")
+                            fileRef.putData(emptyData, metadata: nil) { metadata, error in
+                                if let error = error {
+                                    print("Error creating folder: \(error.localizedDescription)")
+                                } else {
+                                    print("Folder \(folderName) created successfully")
+                                    let code = Code(context: moc)
+                                    code.id = UUID()
+                                    code.name = codeNameText
+                                    
+                                    try? moc.save()
+                                }
+                            }
                         } else {
                             isErrorLabelVisible = true
                         }
                     }) {
-                        Text("Submit")
+                        Text("New Group")
                             .foregroundColor(.white)
                     }
                         .padding(.vertical, 10)
@@ -62,7 +80,7 @@ struct ContentView: View {
                     Button(action: {
                         print("New Group clicked")
                     }) {
-                        Text("New Group")
+                        Text("Log In")
                     }
                     .padding(.vertical, 15)
                     .padding(.horizontal, 15)
