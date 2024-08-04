@@ -74,7 +74,7 @@ struct ContentView: View {
                                     } else {
                                         let db = Firestore.firestore()
                                         
-                                        db.collection("codes").document(folderName).setData(["name": codeNameText, "password": passwordText]) { error in
+                                        db.collection("codes").document(folderName).setData(["password": passwordText]) { error in
                                             if let error = error {
                                                 errorText = "Failed to save to Firestore."
                                                 print(error.localizedDescription)
@@ -98,7 +98,7 @@ struct ContentView: View {
                             errorText = "Please, fill the text field and try again."
                         }
                     }) {
-                        Text("Submit")
+                        Text("Create folder")
                             .foregroundColor(.white)
                     }
                         .padding(.vertical, 10)
@@ -117,7 +117,7 @@ struct ContentView: View {
                         }
                     
                     NavigationLink(
-                        destination: DetailView(),
+                        destination: DetailView(name: $codeNameText),
                         isActive: $navigateToDetail,
                         label: { EmptyView() }
                     )
@@ -141,7 +141,12 @@ struct ContentView: View {
     }
     
 struct DetailView: View {
+    @Binding var name: String
     @State private var passwordText = ""
+    @State private var isPasswordCorrect = false
+    @State private var errorText: String? = nil
+    
+    private let db = Firestore.firestore()
     
     var body: some View {
         NavigationStack {
@@ -162,10 +167,8 @@ struct DetailView: View {
                     .font(.system(size: 16, weight: .regular))
                     .padding(.horizontal, 15)
                     .textFieldStyle(.roundedBorder)
-                Button(action: {
-                    
-                }) {
-                    Text("Log In")
+                Button(action: checkPassword) {
+                    Text("Check Password")
                 }
                 .padding(.vertical, 10)
                 .padding(.horizontal, 15)
@@ -175,9 +178,42 @@ struct DetailView: View {
                 .foregroundColor(.white)
                 .cornerRadius(5)
                 
+                // MARK: Display checked password
+                
+                if errorText != nil {
+                    Text(errorText ?? "An internal error was reported.")
+                        .foregroundColor(.red)
+                        .font(.system(size: 14, weight: .regular))
+                        .padding(.vertical, 10)
+                }
+                
+                if isPasswordCorrect {
+                    Text("Password is correct")
+                        .foregroundColor(.green)
+                        .font(.system(size: 14, weight: .regular))
+                        .padding(.vertical, 10)
+                }
+                
                 Spacer()
             }
             .navigationTitle("One more step")
+        }
+    }
+    
+    private func checkPassword() {
+        let docRef = db.collection("codes").document("folder_\(name)")
+            
+        docRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                let storedPassword = document.get("password") as? String ?? ""
+                if storedPassword == passwordText {
+                    isPasswordCorrect = true
+                } else {
+                    errorText = "Incorrect password"
+                }
+            } else {
+                errorText = "Code does not exist"
+            }
         }
     }
 }
