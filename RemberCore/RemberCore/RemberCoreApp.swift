@@ -18,12 +18,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct RemberCoreApp: App {
-    @StateObject private var dataController = DataController()
     var body: some Scene {
         @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
         WindowGroup {
             ContentView()
-                .environment(\.managedObjectContext, dataController.container.viewContext)
         }
     }
 }

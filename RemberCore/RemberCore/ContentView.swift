@@ -11,8 +11,6 @@ import FirebaseStorage
 import FirebaseFirestore
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) var moc
-    @FetchRequest(sortDescriptors: []) var codes: FetchedResults<Code>
     @State private var codeNameText = ""
     @State private var folderNames: [String] = []
     @State private var showAlert = false

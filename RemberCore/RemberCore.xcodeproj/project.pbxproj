@@ -14,8 +14,6 @@
 		709B91C72C5C88160003A22C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 709B91C62C5C88160003A22C /* ContentView.swift */; };
 		709B91C92C5C88180003A22C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 709B91C82C5C88180003A22C /* Assets.xcassets */; };
 		709B91CC2C5C88180003A22C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 709B91CB2C5C88180003A22C /* Preview Assets.xcassets */; };
-		709B91D42C5C89300003A22C /* Rember.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 709B91D22C5C89300003A22C /* Rember.xcdatamodeld */; };
-		709B91D62C5C899C0003A22C /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 709B91D52C5C899C0003A22C /* DataController.swift */; };
 		70B0D94B2C5DF7F400447B67 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 70B0D94A2C5DF7F400447B67 /* FirebaseStorage */; };
 		70B0D94D2C5DF7F400447B67 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 70B0D94C2C5DF7F400447B67 /* FirebaseStorageCombine-Community */; };
 /* End PBXBuildFile section */
@@ -27,8 +25,6 @@
 		709B91C62C5C88160003A22C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		709B91C82C5C88180003A22C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		709B91CB2C5C88180003A22C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		709B91D32C5C89300003A22C /* Rember.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Rember.xcdatamodel; sourceTree = "<group>"; };
-		709B91D52C5C899C0003A22C /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,8 +63,6 @@
 			children = (
 				709B91C42C5C88160003A22C /* RemberCoreApp.swift */,
 				709B91C62C5C88160003A22C /* ContentView.swift */,
-				709B91D22C5C89300003A22C /* Rember.xcdatamodeld */,
-				709B91D52C5C899C0003A22C /* DataController.swift */,
 				709B91C82C5C88180003A22C /* Assets.xcassets */,
 				70928CB22C5D031000C2DC6B /* GoogleService-Info.plist */,
 				709B91CA2C5C88180003A22C /* Preview Content */,
@@ -164,8 +158,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				709B91D42C5C89300003A22C /* Rember.xcdatamodeld in Sources */,
-				709B91D62C5C899C0003A22C /* DataController.swift in Sources */,
 				709B91C72C5C88160003A22C /* ContentView.swift in Sources */,
 				709B91C52C5C88160003A22C /* RemberCoreApp.swift in Sources */,
 			);
@@ -405,19 +397,6 @@
 			productName = "FirebaseStorageCombine-Community";
 		};
 /* End XCSwiftPackageProductDependency section */
-
-/* Begin XCVersionGroup section */
-		709B91D22C5C89300003A22C /* Rember.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				709B91D32C5C89300003A22C /* Rember.xcdatamodel */,
-			);
-			currentVersion = 709B91D32C5C89300003A22C /* Rember.xcdatamodel */;
-			path = Rember.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 709B91B92C5C88160003A22C /* Project object */;
 }
