@@ -14,7 +14,7 @@ struct ContentView: View {
     @State private var codeNameText = ""
     @State private var folderNames: [String] = []
     @State private var showAlert = false
-    @State private var navigateToDetail = false
+        @State private var navigateToDetail = false
     @State private var errorText: String? = nil
     @State private var passwordText = ""
     @State private var selectedName: String = ""
@@ -101,12 +101,6 @@ struct ContentView: View {
                           secondaryButton: .cancel())
                 }
                 
-                NavigationLink(
-                    destination: DetailView(name: $codeNameText),
-                    isActive: $navigateToDetail,
-                    label: { EmptyView() }
-                )
-                
                 if errorText != nil {
                     Text(errorText ?? "An internal error was reported.")
                         .foregroundColor(Color.red)
@@ -114,13 +108,19 @@ struct ContentView: View {
                         .padding(.vertical, 10)
                 }
                 
-                if isSuccessful {
-                    Text("You created a new folder!")
-                        .foregroundColor(.green)
-                        .font(.system(size: 14, weight: .regular))
-                        .padding(.vertical, 10)
-                }
-                
+                // MARK: Navigation
+                // Navigate to main view
+                NavigationLink(
+                    destination: MainView(folderCode: $codeNameText),
+                    isActive: $isSuccessful,
+                    label: { EmptyView() }
+                )
+                // Navigate to confirm password
+                NavigationLink(
+                    destination: DetailView(folderCode: $codeNameText),
+                    isActive: $navigateToDetail,
+                    label: { EmptyView() }
+                )
                 Spacer()
             }
             .navigationTitle("Welcome to Rember")
@@ -142,7 +142,7 @@ struct ContentView: View {
 }
     
 struct DetailView: View {
-    @Binding var name: String
+    @Binding var folderCode: String
     @State private var passwordText = ""
     @State private var isPasswordCorrect = false
     @State private var errorText: String? = nil
@@ -199,13 +199,20 @@ struct DetailView: View {
                 }
                 
                 Spacer()
+                
+                // Navigate to main view
+                NavigationLink(
+                    destination: MainView(folderCode: $folderCode),
+                    isActive: $isPasswordCorrect,
+                    label: { EmptyView() }
+                )
             }
             .navigationTitle("One more step")
         }
     }
     
     private func checkPassword() {
-        let docRef = db.collection("codes").document("folder_\(name)")
+        let docRef = db.collection("codes").document("folder_\(folderCode)")
             
         docRef.getDocument { (document, error) in
             if let document = document, document.exists {
