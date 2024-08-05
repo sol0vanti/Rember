@@ -16,6 +16,7 @@
 		709B91CC2C5C88180003A22C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 709B91CB2C5C88180003A22C /* Preview Assets.xcassets */; };
 		70B0D94B2C5DF7F400447B67 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 70B0D94A2C5DF7F400447B67 /* FirebaseStorage */; };
 		70B0D94D2C5DF7F400447B67 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 70B0D94C2C5DF7F400447B67 /* FirebaseStorageCombine-Community */; };
+		70EE39722C60DCDE00286360 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EE39712C60DCDE00286360 /* MainView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		709B91C62C5C88160003A22C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		709B91C82C5C88180003A22C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		709B91CB2C5C88180003A22C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		70EE39712C60DCDE00286360 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,10 +63,9 @@
 		709B91C32C5C88160003A22C /* RemberCore */ = {
 			isa = PBXGroup;
 			children = (
-				709B91C42C5C88160003A22C /* RemberCoreApp.swift */,
-				709B91C62C5C88160003A22C /* ContentView.swift */,
-				709B91C82C5C88180003A22C /* Assets.xcassets */,
-				70928CB22C5D031000C2DC6B /* GoogleService-Info.plist */,
+				70EE396E2C60DC8F00286360 /* views */,
+				70EE396F2C60DC9C00286360 /* delegates */,
+				70EE39702C60DCA400286360 /* extra */,
 				709B91CA2C5C88180003A22C /* Preview Content */,
 			);
 			path = RemberCore;
@@ -76,6 +77,32 @@
 				709B91CB2C5C88180003A22C /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		70EE396E2C60DC8F00286360 /* views */ = {
+			isa = PBXGroup;
+			children = (
+				709B91C62C5C88160003A22C /* ContentView.swift */,
+				70EE39712C60DCDE00286360 /* MainView.swift */,
+			);
+			path = views;
+			sourceTree = "<group>";
+		};
+		70EE396F2C60DC9C00286360 /* delegates */ = {
+			isa = PBXGroup;
+			children = (
+				709B91C42C5C88160003A22C /* RemberCoreApp.swift */,
+			);
+			path = delegates;
+			sourceTree = "<group>";
+		};
+		70EE39702C60DCA400286360 /* extra */ = {
+			isa = PBXGroup;
+			children = (
+				709B91C82C5C88180003A22C /* Assets.xcassets */,
+				70928CB22C5D031000C2DC6B /* GoogleService-Info.plist */,
+			);
+			path = extra;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -159,6 +186,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				709B91C72C5C88160003A22C /* ContentView.swift in Sources */,
+				70EE39722C60DCDE00286360 /* MainView.swift in Sources */,
 				709B91C52C5C88160003A22C /* RemberCoreApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
