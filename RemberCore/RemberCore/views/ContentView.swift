@@ -14,7 +14,7 @@ struct ContentView: View {
     @State private var codeNameText = ""
     @State private var folderNames: [String] = []
     @State private var showAlert = false
-        @State private var navigateToDetail = false
+    @State private var navigateToDetail = false
     @State private var errorText: String? = nil
     @State private var passwordText = ""
     @State private var selectedName: String = ""
