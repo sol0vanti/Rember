@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
 struct MainView: View {
     @Binding var folderCode: String
     @State private var showCreateAlert = false
     @State private var alertTextFieldText = ""
-    @State private var subFolders: [String] = ["Example folder 1", "Folder 2"]
+    @State private var subFolders: [String] = []
+    private let db = Firestore.firestore()
     
     var body: some View {
         NavigationStack {
@@ -25,6 +27,9 @@ struct MainView: View {
             .navigationBarBackButtonHidden(true)
             .navigationTitle(folderCode)
             .navigationBarTitleDisplayMode(.large)
+            .onAppear {
+                getSubFolders()
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
@@ -41,6 +46,15 @@ struct MainView: View {
                             if !alertTextFieldText.isEmpty {
                                 subFolders.append(alertTextFieldText)
                                 alertTextFieldText = ""
+                                let folderName: String = "folder_\(folderCode)"
+                                db.collection("codes").document(folderName).updateData(["subFolders":subFolders]) { error in
+                                    if let error = error {
+                                        print(error.localizedDescription)
+                                    } else {
+                                        print("subFolders were successfully saved")
+                                        getSubFolders()
+                                    }
+                                }
                             }
                         }
 
@@ -50,6 +64,16 @@ struct MainView: View {
                        Text("Please create new subfolder")
                     }
                 }
+            }
+        }
+    }
+    
+    private func getSubFolders() {
+        let folderName: String = "folder_\(folderCode)"
+        db.collection("codes").document(folderName).getDocument(){ (document, error) in
+            if let document = document, document.exists {
+                let storedSubFolders = document.get("subFolders") as? [String] ?? []
+                subFolders = storedSubFolders
             }
         }
     }
