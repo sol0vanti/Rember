@@ -17,12 +17,11 @@ struct MainView: View {
     
     var body: some View {
         NavigationStack {
-            Form {
-                Section("All memories") {
-                    ForEach(subFolders, id: \.self) { subFolder in
-                        Text(subFolder)
-                    }
+            List {
+                ForEach(subFolders, id: \.self) { subFolder in
+                    Text(subFolder)
                 }
+                .onDelete(perform: deleteSubFolder)
             }
             .navigationBarBackButtonHidden(true)
             .navigationTitle(folderCode)
@@ -46,15 +45,7 @@ struct MainView: View {
                             if !alertTextFieldText.isEmpty {
                                 subFolders.append(alertTextFieldText)
                                 alertTextFieldText = ""
-                                let folderName: String = "folder_\(folderCode)"
-                                db.collection("codes").document(folderName).updateData(["subFolders":subFolders]) { error in
-                                    if let error = error {
-                                        print(error.localizedDescription)
-                                    } else {
-                                        print("subFolders were successfully saved")
-                                        getSubFolders()
-                                    }
-                                }
+                                saveSubFolders()
                             }
                         }
 
@@ -66,6 +57,23 @@ struct MainView: View {
                 }
             }
         }
+    }
+    
+    private func saveSubFolders() {
+        let folderName: String = "folder_\(folderCode)"
+        db.collection("codes").document(folderName).updateData(["subFolders":subFolders]) { error in
+            if let error = error {
+                print(error.localizedDescription)
+            } else {
+                print("subFolders were successfully saved")
+                getSubFolders()
+            }
+        }
+    }
+    
+    private func deleteSubFolder(at offsets: IndexSet) {
+        subFolders.remove(atOffsets: offsets)
+        saveSubFolders()
     }
     
     private func getSubFolders() {
