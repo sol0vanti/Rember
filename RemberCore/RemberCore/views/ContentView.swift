@@ -58,29 +58,24 @@ struct ContentView: View {
                 Button(action: {
                     let folderName = "folder_\(codeNameText)"
                     
-                    if codeNameText != "" {
+                    if codeNameText != "" && passwordText != "" {
                         checkDocumentExists(name: folderName) { message in
                             if message != nil {
                                 showAlert = true
                             } else {
-                                if passwordText != "" {
-                                    let db = Firestore.firestore()
-                                    
-                                    db.collection("codes").document(folderName).setData(["password": passwordText]) { error in
-                                        if let error = error {
-                                            errorText = "Failed to save to Firestore."
-                                            print(error.localizedDescription)
-                                        } else {
-                                            isSuccessful = true
-                                        }
+                                let db = Firestore.firestore()
+                                db.collection("codes").document(folderName).setData(["password": passwordText]) { error in
+                                    if let error = error {
+                                        errorText = "Failed to save to Firestore."
+                                        print(error.localizedDescription)
+                                    } else {
+                                        isSuccessful = true
                                     }
-                                } else {
-                                    errorText = "Please, fill the password text field and try again."
                                 }
                             }
                         }
                     } else {
-                        errorText = "Please, fill the title text field and try again."
+                        errorText = "Please, fill all text fields and try again."
                     }
                 }) {
                     Text("Create folder")
@@ -96,7 +91,7 @@ struct ContentView: View {
                 .alert(isPresented: $showAlert) {
                     Alert(title: Text("Failed to create new folder"), message: Text("It seems that this folder already exists."),
                           primaryButton: .destructive(Text("Log In")) {
-                        navigateToDetail = true
+                        checkPassword()
                     },
                           secondaryButton: .cancel())
                 }
@@ -115,12 +110,6 @@ struct ContentView: View {
                     isActive: $isSuccessful,
                     label: { EmptyView() }
                 )
-                // Navigate to confirm password
-                NavigationLink(
-                    destination: DetailView(folderCode: $codeNameText),
-                    isActive: $navigateToDetail,
-                    label: { EmptyView() }
-                )
                 Spacer()
             }
             .navigationTitle("Welcome to Rember")
@@ -128,9 +117,8 @@ struct ContentView: View {
         }
     }
     
-    func checkDocumentExists(name: String, completion: @escaping (String?) -> Void) {
+    private func checkDocumentExists(name: String, completion: @escaping (String?) -> Void) {
         let db = Firestore.firestore()
-        
         db.collection("codes").document(name).getDocument { (document, error) in
             if let document = document, document.exists {
                 completion("The code is already existing")
@@ -139,86 +127,16 @@ struct ContentView: View {
             }
         }
     }
-}
-    
-struct DetailView: View {
-    @Binding var folderCode: String
-    @State private var passwordText = ""
-    @State private var isPasswordCorrect = false
-    @State private var errorText: String? = nil
-    
-    private let db = Firestore.firestore()
-    
-    var body: some View {
-        NavigationStack {
-            VStack {
-                HStack {
-                    Text("Enter your password in order to complete registration")
-                        .font(.system(size: 18, weight: .semibold))
-                        .multilineTextAlignment(.leading)
-                        .foregroundColor(Color(UIColor.lightGray))
-                        .padding(.horizontal, 15)
-                    Spacer()
-                }
-                
-                Spacer()
-                
-                TextField("Password", text: $passwordText)
-                    .frame(width: UIScreen.main.bounds.width - 30, height: 35)
-                    .font(.system(size: 16, weight: .regular))
-                    .padding(.horizontal, 15)
-                    .textFieldStyle(.roundedBorder)
-                    .disableAutocorrection(true)
-                    .autocapitalization(.none)
-                
-                Button(action: checkPassword) {
-                    Text("Check Password")
-                }
-                .padding(.vertical, 10)
-                .padding(.horizontal, 15)
-                .frame(width: UIScreen.main.bounds.width - 30, height: 35)
-                .font(.system(size: 16, weight: .semibold))
-                .background(Color.accentColor)
-                .foregroundColor(.white)
-                .cornerRadius(5)
-                
-                // MARK: Display checked password
-                
-                if errorText != nil {
-                    Text(errorText ?? "An internal error was reported.")
-                        .foregroundColor(.red)
-                        .font(.system(size: 14, weight: .regular))
-                        .padding(.vertical, 10)
-                }
-                
-                if isPasswordCorrect {
-                    Text("Password is correct")
-                        .foregroundColor(.green)
-                        .font(.system(size: 14, weight: .regular))
-                        .padding(.vertical, 10)
-                }
-                
-                Spacer()
-                
-                // Navigate to main view
-                NavigationLink(
-                    destination: MainView(folderCode: $folderCode),
-                    isActive: $isPasswordCorrect,
-                    label: { EmptyView() }
-                )
-            }
-            .navigationTitle("One more step")
-        }
-    }
     
     private func checkPassword() {
-        let docRef = db.collection("codes").document("folder_\(folderCode)")
+        let db = Firestore.firestore()
+        let docRef = db.collection("codes").document("folder_\(codeNameText)")
             
         docRef.getDocument { (document, error) in
             if let document = document, document.exists {
                 let storedPassword = document.get("password") as? String ?? ""
                 if storedPassword == passwordText {
-                    isPasswordCorrect = true
+                    isSuccessful = true
                 } else {
                     errorText = "Incorrect password"
                 }
@@ -228,8 +146,6 @@ struct DetailView: View {
         }
     }
 }
-    
-    // MARK: Functionality of app
 
 #Preview {
     ContentView()
