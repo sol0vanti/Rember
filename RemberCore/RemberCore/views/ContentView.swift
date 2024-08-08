@@ -106,7 +106,7 @@ struct ContentView: View {
                 // MARK: Navigation
                 // Navigate to main view
                 NavigationLink(
-                    destination: MainView(folderCode: $codeNameText),
+                    destination: MainView(folderCode: codeNameText),
                     isActive: $isSuccessful,
                     label: { EmptyView() }
                 )
